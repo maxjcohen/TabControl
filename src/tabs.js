@@ -1,14 +1,15 @@
-let opened_tabs = [];
+let maxOpenTabs = 1;
+let currentTabs = [];
 
 browser.tabs.onCreated.addListener(async (tab) => {
     if (tab.type == "messageDisplay") {
-	opened_tabs.push(tab.id);
+	currentTabs.push(tab.id);
     }
-    if (opened_tabs.length > 3) {
-	browser.tabs.remove(opened_tabs.shift())
+    if (currentTabs.length > maxOpenTabs) {
+	browser.tabs.remove(currentTabs.shift())
     }
 });
 
 browser.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
-    opened_tabs = opened_tabs.filter(item => item !== tabId);
+    currentTabs = currentTabs.filter(item => item !== tabId);
 });
