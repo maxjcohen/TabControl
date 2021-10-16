@@ -6,7 +6,7 @@
     "author": "Max&Guy",
     "applications": {
 	"gecko": {
-	    "id": "helloworld@yoursite.com",
+	    "id": "tabcontrol@nuitcodecitoyen.org",
 	    "strict_min_version": "78.0"
 	}
     },
