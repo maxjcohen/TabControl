@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "tabControl",
-    "description": "Automatic tab closing and replacing.",
+    "description": "Automatically close old tabs when opening new mails.",
     "version": "0.0.1",
     "author": "Max&Guy",
     "applications": {
