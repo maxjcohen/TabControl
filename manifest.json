@@ -13,6 +13,10 @@
     "background": {
 	"page": "src/background.html"
     },
+    "options_ui": {
+	"page": "src/settings.html"
+    },
+    "permissions": ["storage"],
     "icons": {
 	"64": "images/internet.png",
 	"32": "images/internet-32px.png",
