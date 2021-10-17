@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "tabControl",
+    "name": "TabControl",
     "description": "Automatically close old tabs when opening new mails.",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "author": "Max&Guy",
     "applications": {
 	"gecko": {
