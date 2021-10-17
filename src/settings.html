@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Settings</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Settings</title>
+</head>
+
+<body>
+  <div>
     <form>
       <label for="maxOpenTabs">Maximum opened tabs: </label>
-      <input type="number" value="3" name="maxOpenTabs" id="maxOpenTabs"/>
+      <input type="number" value="3" name="maxOpenTabs" id="maxOpenTabs" />
+
+      <div>
+        <label for="closeDuplicateTabs">Close duplicate tabs: </label>
+        <input type="checkbox" name="closeDuplicateTabs" id="closeDuplicateTabs" />
+      </div>
+
       <button type="submit">Save</button>
     </form>
-    <script src="settings.js" charset="utf-8"></script>
-  </body>
+  </div>
+  <script src="settings.js" charset="utf-8"></script>
+</body>
+
 </html>

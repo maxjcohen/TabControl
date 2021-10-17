@@ -16,7 +16,7 @@
     "options_ui": {
 	"page": "src/settings.html"
     },
-    "permissions": ["storage"],
+    "permissions": ["storage", "messagesRead"],
     "icons": {
 	"64": "images/internet.png",
 	"32": "images/internet-32px.png",
