@@ -1,4 +1,4 @@
-let maxOpenTabs = 1;
+let maxOpenTabs = 3;
 let currentTabs = [];
 
 browser.tabs.onCreated.addListener(async (tab) => {
@@ -14,14 +14,17 @@ browser.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
     currentTabs = currentTabs.filter(item => item !== tabId);
 });
 
-function onGet(results) {
-    if (results.maxOpenTabs) {
-	maxOpenTabs = results.maxOpenTabs;
+async function loadMaxOpenTabs() {
+    function onGet(results) {
+	if (results.maxOpenTabs) {
+	    maxOpenTabs = results.maxOpenTabs;
+	}
     }
-}
-function onError(error) {
-    console.log(error);
-}
+    function onError(error) {
+	console.log(error);
+    }
 
-let current = browser.storage.sync.get("maxOpenTabs");
-current.then(onGet, onError);
+    let current = browser.storage.sync.get("maxOpenTabs");
+    current.then(onGet, onError);
+}
+document.addEventListener("DOMContentLoaded", loadMaxOpenTabs);
