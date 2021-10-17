@@ -3,6 +3,7 @@ function saveSettings(e) {
     browser.storage.sync.set({
 	maxOpenTabs: document.querySelector("#maxOpenTabs").value
     });
+    browser.runtime.sendMessage({});
 }
 
 function restoreSettings() {

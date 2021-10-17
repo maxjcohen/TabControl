@@ -28,3 +28,4 @@ async function loadMaxOpenTabs() {
     current.then(onGet, onError);
 }
 document.addEventListener("DOMContentLoaded", loadMaxOpenTabs);
+browser.runtime.onMessage.addListener(loadMaxOpenTabs);
