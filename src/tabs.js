@@ -27,5 +27,14 @@ async function loadMaxOpenTabs() {
     let current = browser.storage.sync.get("maxOpenTabs");
     current.then(onGet, onError);
 }
+
+async function closeAllTabs() {
+    let tabs = await browser.tabs.query({});
+    tabs.forEach(async (tab) => {
+	browser.tabs.remove(tab.id);
+    })
+}
+
 document.addEventListener("DOMContentLoaded", loadMaxOpenTabs);
+document.addEventListener("DOMContentLoaded", closeAllTabs);
 browser.runtime.onMessage.addListener(loadMaxOpenTabs);
