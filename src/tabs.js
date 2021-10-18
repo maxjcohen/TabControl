@@ -2,7 +2,7 @@ let maxOpenTabs = 3;
 let currentTabs = [];
 
 browser.tabs.onCreated.addListener(async (tab) => {
-    if (tab.type == "messageDisplay") {
+    if (!tab.type || tab.type == "messageDisplay") {
 	currentTabs.push(tab.id);
     }
     if (currentTabs.length > maxOpenTabs) {
