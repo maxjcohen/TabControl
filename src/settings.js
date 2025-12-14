@@ -1,9 +1,10 @@
 function saveSettings(e) {
     e.preventDefault();
+    const max = parseInt(document.querySelector("#maxOpenTabs").value, 10) || 3;
     browser.storage.sync.set({
-        maxOpenTabs: document.querySelector("#maxOpenTabs").value
+        maxOpenTabs: max,
     });
-    browser.runtime.sendMessage({});
+    browser.runtime.sendMessage({settingsUpdated: true});
 }
 
 function restoreSettings() {
