@@ -2,18 +2,25 @@ let maxOpenTabs = 3;
 let currentTabs = [];
 let trackMessageTabsOnly = true;
 
+// Helper function to check if a tab should be tracked
+function shouldTrackTab(tab) {
+    return !trackMessageTabsOnly || tab.type === "messageDisplay";
+}
+
 // Load settings from storage
 async function loadSettings() {
     try {
-        const results = await browser.storage.sync.get(["maxOpenTabs", "trackMessageTabsOnly"]);
-        if (results && results.maxOpenTabs) {
-            maxOpenTabs = results.maxOpenTabs;
+        const { maxOpenTabs: savedMaxTabs, trackMessageTabsOnly: savedTrackMode } = 
+            await browser.storage.sync.get(["maxOpenTabs", "trackMessageTabsOnly"]);
+        
+        if (savedMaxTabs) {
+            maxOpenTabs = savedMaxTabs;
         }
-        if (typeof results.trackMessageTabsOnly === 'boolean') {
-            trackMessageTabsOnly = results.trackMessageTabsOnly;
+        if (typeof savedTrackMode === 'boolean') {
+            trackMessageTabsOnly = savedTrackMode;
         }
     } catch (e) {
-        console.error(e);
+        console.error("Failed to load settings:", e);
     }
     // After loading settings, update current tabs
     await getCurrentTabs();
@@ -22,13 +29,10 @@ async function loadSettings() {
 browser.runtime.onMessage.addListener(loadSettings);
 
 async function getCurrentTabs() {
-    let tabs = await browser.tabs.query({});
-    currentTabs = [];
-    tabs.forEach((tab) => {
-        if (!trackMessageTabsOnly || tab.type === "messageDisplay") {
-            currentTabs.push(tab.id);
-        }
-    });
+    const tabs = await browser.tabs.query({});
+    currentTabs = tabs
+        .filter(shouldTrackTab)
+        .map(tab => tab.id);
 }
 
 
@@ -36,12 +40,10 @@ async function getCurrentTabs() {
 async function updateCurrentTabs() {
     while (currentTabs.length > maxOpenTabs) {
         const idToClose = currentTabs.shift();
-        if (idToClose !== undefined) {
-            try {
-                await browser.tabs.remove(idToClose);
-            } catch (e) {
-                console.error("Failed to remove tab", idToClose, e);
-            }
+        try {
+            await browser.tabs.remove(idToClose);
+        } catch (e) {
+            console.error("Failed to remove tab", idToClose, e);
         }
     }
 }
@@ -49,18 +51,15 @@ async function updateCurrentTabs() {
 // Initialize the extension
 async function init() {
     await loadSettings();
-    await getCurrentTabs();
-    await updateCurrentTabs();
 }
 document.addEventListener("DOMContentLoaded", init);
 
 // Listen for tab creation and removal events
 browser.tabs.onCreated.addListener(async (tab) => {
-    if (!trackMessageTabsOnly || tab.type === "messageDisplay") {
+    if (shouldTrackTab(tab)) {
         currentTabs.push(tab.id);
+        await updateCurrentTabs();
     }
-
-    await updateCurrentTabs();
 });
 browser.tabs.onRemoved.addListener((tabId) => {
     currentTabs = currentTabs.filter(item => item !== tabId);
