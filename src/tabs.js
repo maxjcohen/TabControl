@@ -3,10 +3,10 @@ let currentTabs = [];
 
 browser.tabs.onCreated.addListener(async (tab) => {
     if (!tab.type || tab.type == "messageDisplay") {
-	currentTabs.push(tab.id);
+        currentTabs.push(tab.id);
     }
     if (currentTabs.length > maxOpenTabs) {
-	browser.tabs.remove(currentTabs.shift())
+        browser.tabs.remove(currentTabs.shift())
     }
 });
 
@@ -16,12 +16,12 @@ browser.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 
 async function loadMaxOpenTabs() {
     function onGet(results) {
-	if (results.maxOpenTabs) {
-	    maxOpenTabs = results.maxOpenTabs;
-	}
+        if (results.maxOpenTabs) {
+            maxOpenTabs = results.maxOpenTabs;
+        }
     }
     function onError(error) {
-	console.log(error);
+        console.log(error);
     }
 
     let current = browser.storage.sync.get("maxOpenTabs");
@@ -31,7 +31,7 @@ async function loadMaxOpenTabs() {
 async function closeAllTabs() {
     let tabs = await browser.tabs.query({});
     tabs.forEach(async (tab) => {
-	browser.tabs.remove(tab.id);
+        browser.tabs.remove(tab.id);
     })
 }
 

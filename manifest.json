@@ -5,21 +5,23 @@
     "version": "0.3.0",
     "author": "Max&Guy",
     "applications": {
-	"gecko": {
-	    "id": "tabcontrol@nuitcodecitoyen.org",
-	    "strict_min_version": "68.0"
-	}
+        "gecko": {
+            "id": "tabcontrol@nuitcodecitoyen.org",
+            "strict_min_version": "68.0"
+        }
     },
     "background": {
-	"page": "src/background.html"
+        "page": "src/background.html"
     },
     "options_ui": {
-	"page": "src/settings.html"
+        "page": "src/settings.html"
     },
-    "permissions": ["storage"],
+    "permissions": [
+        "storage"
+    ],
     "icons": {
-	"64": "images/internet.png",
-	"32": "images/internet-32px.png",
-	"16": "images/internet-16px.png"
+        "64": "images/internet.png",
+        "32": "images/internet-32px.png",
+        "16": "images/internet-16px.png"
     }
 }
