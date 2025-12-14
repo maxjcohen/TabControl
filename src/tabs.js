@@ -2,6 +2,7 @@ let maxOpenTabs = 3;
 let currentTabs = [];
 let trackMessageTabsOnly = true;
 
+// Load settings from storage
 async function loadSettings() {
     try {
         const results = await browser.storage.sync.get(["maxOpenTabs", "trackMessageTabsOnly"]);
@@ -14,22 +15,25 @@ async function loadSettings() {
     } catch (e) {
         console.error(e);
     }
+    // After loading settings, update current tabs
+    await getCurrentTabs();
+    await updateCurrentTabs();
 }
+browser.runtime.onMessage.addListener(loadSettings);
 
-async function init() {
-    await loadSettings();
+async function getCurrentTabs() {
     let tabs = await browser.tabs.query({});
-    tabs.forEach(async (tab) => {
-        browser.tabs.remove(tab.id);
-    })
-    let currentTabs = [];
+    currentTabs = [];
+    tabs.forEach((tab) => {
+        if (!trackMessageTabsOnly || tab.type === "messageDisplay") {
+            currentTabs.push(tab.id);
+        }
+    });
 }
 
-browser.tabs.onCreated.addListener(async (tab) => {
-    if (!trackMessageTabsOnly || tab.type === "messageDisplay") {
-        currentTabs.push(tab.id);
-    }
 
+// Update current tabs and close excess tabs if necessary
+async function updateCurrentTabs() {
     while (currentTabs.length > maxOpenTabs) {
         const idToClose = currentTabs.shift();
         if (idToClose !== undefined) {
@@ -40,11 +44,24 @@ browser.tabs.onCreated.addListener(async (tab) => {
             }
         }
     }
-});
+}
 
+// Initialize the extension
+async function init() {
+    await loadSettings();
+    await getCurrentTabs();
+    await updateCurrentTabs();
+}
+document.addEventListener("DOMContentLoaded", init);
+
+// Listen for tab creation and removal events
+browser.tabs.onCreated.addListener(async (tab) => {
+    if (!trackMessageTabsOnly || tab.type === "messageDisplay") {
+        currentTabs.push(tab.id);
+    }
+
+    await updateCurrentTabs();
+});
 browser.tabs.onRemoved.addListener((tabId) => {
     currentTabs = currentTabs.filter(item => item !== tabId);
 });
-
-document.addEventListener("DOMContentLoaded", init);
-browser.runtime.onMessage.addListener(loadSettings);
