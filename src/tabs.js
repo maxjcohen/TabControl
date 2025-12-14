@@ -1,11 +1,15 @@
 let maxOpenTabs = 3;
 let currentTabs = [];
+let trackMessageTabsOnly = true;
 
 async function loadSettings() {
     try {
-        const results = await browser.storage.sync.get(["maxOpenTabs"]);
+        const results = await browser.storage.sync.get(["maxOpenTabs", "trackMessageTabsOnly"]);
         if (results && results.maxOpenTabs) {
             maxOpenTabs = results.maxOpenTabs;
+        }
+        if (typeof results.trackMessageTabsOnly === 'boolean') {
+            trackMessageTabsOnly = results.trackMessageTabsOnly;
         }
     } catch (e) {
         console.error(e);
@@ -22,7 +26,7 @@ async function init() {
 }
 
 browser.tabs.onCreated.addListener(async (tab) => {
-    if (tab.type === "messageDisplay") {
+    if (!trackMessageTabsOnly || tab.type === "messageDisplay") {
         currentTabs.push(tab.id);
     }
 
